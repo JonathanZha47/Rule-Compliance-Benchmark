@@ -18,7 +18,7 @@
     "setup": "scripts/setup.sh"
   },
   "dependencies": {
-    "@earendil-works/pi-coding-agent": "file:vendor/pi/pi-coding-agent-0.84.3.tgz",
+    "@earendil-works/pi-coding-agent": "file:vendor/pi/earendil-works-pi-coding-agent-0.84.3.tgz",
     "franc-min": "^6.2.0"
   },
   "devDependencies": {
@@ -28,11 +28,11 @@
     "vitest": "4.1.9"
   },
   "overrides": {
-    "@earendil-works/pi-ai": "file:vendor/pi/pi-ai-0.84.3.tgz",
-    "@earendil-works/pi-agent-core": "file:vendor/pi/pi-agent-core-0.84.3.tgz",
-    "@earendil-works/pi-client": "file:vendor/pi/pi-client-0.84.3.tgz",
-    "@earendil-works/pi-protocol": "file:vendor/pi/pi-protocol-0.84.3.tgz",
-    "@earendil-works/pi-tui": "file:vendor/pi/pi-tui-0.84.3.tgz",
-    "@earendil-works/pi-telemetry": "file:vendor/pi/pi-telemetry-0.84.3.tgz"
+    "@earendil-works/pi-ai": "file:vendor/pi/earendil-works-pi-ai-0.84.3.tgz",
+    "@earendil-works/pi-agent-core": "file:vendor/pi/earendil-works-pi-agent-core-0.84.3.tgz",
+    "@earendil-works/pi-client": "file:vendor/pi/earendil-works-pi-client-0.84.3.tgz",
+    "@earendil-works/pi-protocol": "file:vendor/pi/earendil-works-pi-protocol-0.84.3.tgz",
+    "@earendil-works/pi-tui": "file:vendor/pi/earendil-works-pi-tui-0.84.3.tgz",
+    "@earendil-works/pi-telemetry": "file:vendor/pi/earendil-works-pi-telemetry-0.84.3.tgz"
   }
 }

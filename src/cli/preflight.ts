@@ -67,7 +67,7 @@ export async function preflightCommand(): Promise<number> {
   const fromVendor =
     existsSync(installed) &&
     existsSync(lock) &&
-    readFileSync(lock, "utf8").includes('"resolved": "file:vendor/pi/pi-coding-agent-0.84.3.tgz"');
+    readFileSync(lock, "utf8").includes('"resolved": "file:vendor/pi/earendil-works-pi-coding-agent-0.84.3.tgz"');
   checks.push({
     name: "pi installed",
     ok: fromVendor,

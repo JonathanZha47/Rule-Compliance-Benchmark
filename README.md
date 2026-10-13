@@ -34,7 +34,7 @@ This README is the entry point. It has four parts:
 
 Everything installs inside this directory. The pi coding agent, whose native compaction the
 benchmark runs, ships in [`vendor/pi/`](vendor/pi/README.md) as pinned, checksummed npm tarballs, so
-no pi checkout is needed.
+no pi checkout is needed (see [The pinned pi agent](#the-pinned-pi-agent-vendorpi) below).
 
 ### Option A: local
 
@@ -63,6 +63,52 @@ alias arcbench-docker-sh='docker run --rm -e OPENROUTER_API_KEY -v "$PWD/runs:/b
 The image holds Node 24.19.0, Python 3.13 and the same pinned packages, with pi from `vendor/pi/`.
 New runs land in `runs/`, outside the container. Every `./arcbench …` command below also works as `arcbench-docker …`. Use
 `arcbench-docker-sh` for the scripts and tests, for example `arcbench-docker-sh -c 'npm test'`.
+
+### The pinned pi agent (`vendor/pi/`)
+
+ARCBench runs pi's own compaction code (`AgentSession.compact()`) for the Pi and Pi + RP strategies,
+and every run uses the same pi build:
+
+| | |
+|---|---|
+| Upstream | [github.com/earendil-works/pi](https://github.com/earendil-works/pi) |
+| Commit | `97fa14e39cfce78c273a36b2d9e8509cd5bc6b72` (`v0.84.3-3-g97fa14e39`, "fix(coding-agent): reject truncated compaction summaries"); also `piRevision` in `config/benchmark.json`, stamped into every row |
+| Package version | `@earendil-works/pi-coding-agent` `0.84.3` (the version string was not bumped after the tag) |
+| Local change | one type-only patch, [`vendor/pi/patches/0001-cloudflare-ai-gateway-type-annotation.patch`](vendor/pi/patches/0001-cloudflare-ai-gateway-type-annotation.patch), so that commit compiles; it changes no runtime behavior |
+
+**Why it is vendored.** The npm registry has no package for this commit: `0.84.3` on npm predates
+its compaction fix, and `0.84.4` changes pi's compaction requests. Either would make the pi
+strategies a different configuration from the one the paper measured. So `vendor/pi/` holds the
+seven packages packed from that build:
+
+| Tarball | Package |
+|---|---|
+| `earendil-works-pi-coding-agent-0.84.3.tgz` | the agent session and its compaction |
+| `earendil-works-pi-ai-0.84.3.tgz` | model providers (the OpenRouter path is the one used) |
+| `earendil-works-pi-{agent-core,client,protocol,tui,telemetry}-0.84.3.tgz` | internal dependencies of the above |
+
+**How it is installed.** `package.json` depends on the coding-agent tarball and uses `overrides` to
+point every internal pi dependency at its tarball, so npm never mixes in a registry version.
+`npm ci` (run by `scripts/setup.sh` and by the Dockerfile) installs them like any other package.
+`./arcbench preflight` checks that the tarballs match `vendor/pi/SHA256SUMS`, that `node_modules`
+holds pi from `vendor/pi/`, and that pi loads.
+
+**Rebuilding it from source (optional).** To check the tarballs against pi's source, build pi at
+the pinned commit and pack it with `scripts/vendor-pi.sh`:
+
+```bash
+git clone https://github.com/earendil-works/pi.git && cd pi
+git checkout 97fa14e39cfce78c273a36b2d9e8509cd5bc6b72
+git apply <path-to-ARCBench>/vendor/pi/patches/*.patch
+npm ci && npm run build
+cd <path-to-ARCBench> && scripts/vendor-pi.sh <path-to-pi>     # repacks vendor/pi/, refreshes SHA256SUMS
+npm install && npm run test:golden-full                          # reinstall, then replay the recorded requests
+```
+
+pi's build fetches live model catalogs, so a rebuild made on a later date is not byte-identical to
+the shipped tarballs (new checksums, and a changed `package-lock.json`), although the benchmark does
+not use those catalogs. `npm run test:golden-full` confirms that the rebuilt pi still sends
+byte-identical model requests for the 1,819 recorded episodes.
 
 ### API key
 

@@ -296,7 +296,7 @@ metrics/                 arcbench evaluate (core.py) and the violation attributi
 scripts/rq1..rq3/        per study: run.sh (the runs) and analyze.py (the study's numbers)
 scripts/judges/          the rule state and agent behavior judges
 scripts/cases/           the task-case generator and validator
-scripts/setup.sh, vendor-pi.sh, rehydrate-trajectory.ts   environment, pi packing, trajectory rehydration
+scripts/setup.sh, rehydrate-trajectory.ts   environment setup, trajectory rehydration
 runs/                    new runs and their analyses (not tracked)
 tests/                   unit, planner, engine and equivalence tests
 ```
